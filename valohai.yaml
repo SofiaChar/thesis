@@ -1,0 +1,11 @@
+- step:
+    name: load
+    image: python:3.9
+    environment: azure-westeurope-f2sv2
+    command:
+      - pip install numpy
+      - pip install pydicom
+      - python hcc-load.py
+    inputs:
+      - name: hcc_dataset
+        default: s3://dd-sample-bucket/sofiia-thesis/*
