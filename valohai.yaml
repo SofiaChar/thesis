@@ -7,6 +7,319 @@
       - pip install pydicom
       - python hcc-load.py
     inputs:
-      - name: hcc_dataset
-        default: s3://dd-sample-bucket/sofiia-thesis/*
+      - name: hcc1
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_001/*
         optional: True
+      - name: hcc2
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_002/*
+        optional: True
+      - name: hcc3
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_003/*
+        optional: True
+      - name: hcc4
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_004/*
+        optional: True
+      - name: hcc5
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_005/*
+        optional: True
+      - name: hcc6
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_006/*
+        optional: True
+      - name: hcc7
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_007/*
+        optional: True
+      - name: hcc8
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_008/*
+        optional: True
+      - name: hcc9
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_009/*
+        optional: True
+      - name: hcc10
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_010/*
+        optional: True
+      - name: hcc11
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_011/*
+        optional: True
+      - name: hcc12
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_012/*
+        optional: True
+      - name: hcc13
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_013/*
+        optional: True
+      - name: hcc14
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_014/*
+        optional: True
+      - name: hcc15
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_015/*
+        optional: True
+      - name: hcc16
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_016/*
+        optional: True
+      - name: hcc17
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_017/*
+        optional: True
+      - name: hcc18
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_018/*
+        optional: True
+      - name: hcc19
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_019/*
+        optional: True
+      - name: hcc20
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_020/*
+        optional: True
+      - name: hcc21
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_021/*
+        optional: True
+      - name: hcc22
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_022/*
+        optional: True
+      - name: hcc23
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_023/*
+        optional: True
+      - name: hcc24
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_024/*
+        optional: True
+      - name: hcc25
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_025/*
+        optional: True
+      - name: hcc26
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_026/*
+        optional: True
+      - name: hcc27
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_027/*
+        optional: True
+      - name: hcc28
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_028/*
+        optional: True
+      - name: hcc29
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_029/*
+        optional: True
+      - name: hcc30
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_030/*
+        optional: True
+      - name: hcc31
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_031/*
+        optional: True
+      - name: hcc32
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_032/*
+        optional: True
+      - name: hcc33
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_033/*
+        optional: True
+      - name: hcc34
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_034/*
+        optional: True
+      - name: hcc35
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_035/*
+        optional: True
+      - name: hcc36
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_036/*
+        optional: True
+      - name: hcc37
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_037/*
+        optional: True
+      - name: hcc38
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_038/*
+        optional: True
+      - name: hcc39
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_039/*
+        optional: True
+      - name: hcc40
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_040/*
+        optional: True
+      - name: hcc41
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_041/*
+        optional: True
+      - name: hcc42
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_042/*
+        optional: True
+      - name: hcc43
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_043/*
+        optional: True
+      - name: hcc44
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_044/*
+        optional: True
+      - name: hcc45
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_045/*
+        optional: True
+      - name: hcc46
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_046/*
+        optional: True
+      - name: hcc47
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_047/*
+        optional: True
+      - name: hcc48
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_048/*
+        optional: True
+      - name: hcc49
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_049/*
+        optional: True
+      - name: hcc50
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_050/*
+        optional: True
+      - name: hcc51
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_051/*
+        optional: True
+      - name: hcc52
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_052/*
+        optional: True
+      - name: hcc53
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_053/*
+        optional: True
+      - name: hcc54
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_054/*
+        optional: True
+      - name: hcc55
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_055/*
+        optional: True
+      - name: hcc56
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_056/*
+        optional: True
+      - name: hcc57
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_057/*
+        optional: True
+      - name: hcc58
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_058/*
+        optional: True
+      - name: hcc59
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_059/*
+        optional: True
+      - name: hcc60
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_060/*
+        optional: True
+      - name: hcc61
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_061/*
+        optional: True
+      - name: hcc62
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_062/*
+        optional: True
+      - name: hcc63
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_063/*
+        optional: True
+      - name: hcc64
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_064/*
+        optional: True
+      - name: hcc65
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_065/*
+        optional: True
+      - name: hcc66
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_066/*
+        optional: True
+      - name: hcc67
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_067/*
+        optional: True
+      - name: hcc68
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_068/*
+        optional: True
+      - name: hcc69
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_069/*
+        optional: True
+      - name: hcc70
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_070/*
+        optional: True
+      - name: hcc71
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_071/*
+        optional: True
+      - name: hcc72
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_072/*
+        optional: True
+      - name: hcc73
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_073/*
+        optional: True
+      - name: hcc74
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_074/*
+        optional: True
+      - name: hcc75
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_075/*
+        optional: True
+      - name: hcc76
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_076/*
+        optional: True
+      - name: hcc77
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_077/*
+        optional: True
+      - name: hcc78
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_078/*
+        optional: True
+      - name: hcc79
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_079/*
+        optional: True
+      - name: hcc80
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_080/*
+        optional: True
+      - name: hcc81
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_081/*
+        optional: True
+      - name: hcc82
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_082/*
+        optional: True
+      - name: hcc83
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_083/*
+        optional: True
+      - name: hcc84
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_084/*
+        optional: True
+      - name: hcc85
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_085/*
+        optional: True
+      - name: hcc86
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_086/*
+        optional: True
+      - name: hcc87
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_087/*
+        optional: True
+      - name: hcc88
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_088/*
+        optional: True
+      - name: hcc89
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_089/*
+        optional: True
+      - name: hcc90
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_090/*
+        optional: True
+      - name: hcc91
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_091/*
+        optional: True
+      - name: hcc92
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_092/*
+        optional: True
+      - name: hcc93
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_093/*
+        optional: True
+      - name: hcc94
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_094/*
+        optional: True
+      - name: hcc95
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_095/*
+        optional: True
+      - name: hcc96
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_096/*
+        optional: True
+      - name: hcc97
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_097/*
+        optional: True
+      - name: hcc98
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_098/*
+        optional: True
+      - name: hcc99
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_099/*
+        optional: True
+      - name: hcc100
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_100/*
+        optional: True
+      - name: hcc101
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_101/*
+        optional: True
+      - name: hcc102
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_102/*
+        optional: True
+      - name: hcc103
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_103/*
+        optional: True
+      - name: hcc104
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_104/*
+        optional: True
+      - name: hcc105
+        default: s3://dd-sample-bucket/sofiia-thesis/HCC_full/HCC_105/*
+        optional: True
+
