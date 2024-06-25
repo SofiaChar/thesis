@@ -9,3 +9,4 @@
     inputs:
       - name: hcc_dataset
         default: s3://dd-sample-bucket/sofiia-thesis/*
+        optional: True
