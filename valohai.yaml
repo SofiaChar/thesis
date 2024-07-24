@@ -5,21 +5,55 @@
     command:
       - pip install SimpleITK pyradiomics PyWavelets pykwalify numpy==1.26.4
       - pip install pydicom
-      - python hcc-load.py
+      - pip install matplotlib ipywidgets
+      - python hcc-load_and_extract.py
     inputs:
       - name: hcc_dataset
         default: https://dd-sample-bucket.s3.eu-west-1.amazonaws.com/sofiia-thesis/hcc_full.zip
         optional: True
 - step:
-    name: extract_radiomics
+    name: prepare_dataset
     image: python:3.9
-    environment: aws-eu-west-1-p2-xlarge
+    environment: azure-westeurope-f2sv2
     command:
-      - pip install numpy
-      - pip install pydicom
-      - pip install pyradiomics
-      - pip install SimpleITK
-      - python extract_roi_radiomics.py
+      - pip install SimpleITK pyradiomics PyWavelets pykwalify numpy==1.26.4
+      - pip install pandas scikit-learn openpyxl
+      - pip install matplotlib
+      - pip install pydicom ipywidgets
+      - python prepare_dataset.py
     inputs:
-      - name: hcc_dataset
-        default: datum://hcc-data
+      - name: dataset
+        default: datum://0190dbec-f3b8-43cb-15f6-4d23a9e74c75
+      - name: labels
+        default: datum://0190e00d-187f-2591-1c1d-23e761a61ae3
+
+- step:
+    name: train
+    image: python:3.9
+    environment: azure-westeurope-f2sv2
+    command:
+      - pip install numpy pandas scikit-learn matplotlib
+      - python train.py
+    inputs:
+      - name: dataset
+        default: datum://{parameter:transformation_type}
+    parameters:
+      - name: transformation_type
+        default: original
+        type: string
+      - name: n_estimators
+        default: 100
+        type: integer
+        description: Number of trees in the forest
+      - name: max_depth
+        default: 0
+        type: integer
+        description: Maximum depth of the tree
+      - name: min_samples_split
+        default: 2
+        type: integer
+        description: Minimum number of samples required to split an internal node
+      - name: min_samples_leaf
+        default: 1
+        type: integer
+        description: Minimum number of samples required to be at a leaf node

@@ -29,3 +29,13 @@ def process_image_data(img_dcmset):
     img_pixelarray = np.stack([dcm.pixel_array for dcm in img_dcmset], axis=0)
 
     return img_dcmset, img_pixelarray, slice_thickness, pixel_spacing
+
+def process_image_data(img_dcmset):
+    slice_thickness = img_dcmset[0].SliceThickness
+    pixel_spacing = img_dcmset[0].PixelSpacing[0]
+    img_dcmset = [dcm for dcm in img_dcmset if dcm.AcquisitionNumber is not None]
+    acq_number = min(dcm.AcquisitionNumber for dcm in img_dcmset)
+    img_dcmset = [dcm for dcm in img_dcmset if dcm.AcquisitionNumber == acq_number]
+    img_dcmset.sort(key=lambda x: x.ImagePositionPatient[2])
+    img_pixelarray = np.stack([dcm.pixel_array for dcm in img_dcmset], axis=0)
+    return img_dcmset, img_pixelarray, slice_thickness, pixel_spacing
