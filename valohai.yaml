@@ -6,7 +6,9 @@
       - pip install SimpleITK pyradiomics PyWavelets pykwalify numpy==1.26.4
       - pip install pydicom
       - pip install matplotlib ipywidgets
-      - python hcc-load_and_extract.py
+      - pip install valohai-utils
+      - pip install scikit-image
+      - python hcc_load_and_extract.py
     inputs:
       - name: hcc_dataset
         default: https://dd-sample-bucket.s3.eu-west-1.amazonaws.com/sofiia-thesis/hcc_full.zip
