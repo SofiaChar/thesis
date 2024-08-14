@@ -25,9 +25,9 @@
       - python prepare_dataset.py
     inputs:
       - name: dataset
-        default: datum://0190dbec-f3b8-43cb-15f6-4d23a9e74c75
+        default: datum://hcc_radiomics_extracted/latest
       - name: labels
-        default: datum://0190e00d-187f-2591-1c1d-23e761a61ae3
+        default: datum://hcc_labels
 
 - step:
     name: train
@@ -59,3 +59,60 @@
         default: 1
         type: integer
         description: Minimum number of samples required to be at a leaf node
+
+
+- step:
+    name: pre_step
+    image: python:3.10
+    command:
+      - pip install valohai-utils
+      - python ./preprocess.py
+    parameters:
+      - name: exec_id
+        type: string
+        default: "id_123"
+      - name: pre_param
+        type: integer
+        default: 5
+    inputs:
+      - name: pre_dataset
+        default: https://valohaidemo.blob.core.windows.net/mnist/mnist.npz
+
+- step:
+    name: train_step
+    image: python:3.10
+    command:
+      - pip install valohai-utils
+      - python ./train.py
+    parameters:
+      - name: exec_id
+        type: string
+        default: "id_123"
+      - name: train_param
+        type: integer
+        default: 5
+    inputs:
+      - name: dataset
+        default: https://valohaidemo.blob.core.windows.net/mnist/mnist.npz
+        optional: true
+
+- pipeline:
+    name: Example for Pipeline Task
+    parameters:
+      - name: id
+        targets:
+          - preprocess.parameters.exec_id
+          - train.parameters.exec_id
+        default: "id_123"
+    nodes:
+      - name: preprocess
+        step: pre_step
+        type: execution
+      - name: train
+        step: train_step
+        type: execution
+        override:
+          inputs:
+            - name: dataset
+    edges:
+      - [preprocess.output.preprocessed_mnist.npz, train.input.dataset]
