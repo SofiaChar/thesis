@@ -40,6 +40,7 @@ def preprocess_transformation_data(df):
         numeric_cols = numeric_cols.drop('Y')
         non_numeric_cols = non_numeric_cols.append(pd.Index(['Y']))
 
+    iou_dice_cols = df[['iou', 'dice']].copy()
     numeric_cols = numeric_cols.difference(['iou', 'dice'])
 
     print('All numeric_cols num : ', len(numeric_cols))
@@ -58,7 +59,7 @@ def preprocess_transformation_data(df):
     # Correlation Analysis: Remove Highly Correlated Features
     corr_matrix = scaled_df.corr().abs()
     upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
-    to_drop = [column for column in upper.columns if any(upper[column] > 0.99)]
+    to_drop = [column for column in upper.columns if any(upper[column] > 0.98)]
     print(f'Dropping {len(to_drop)} columns: {to_drop}')
     selected_df = scaled_df.drop(columns=to_drop)
     selected_df.to_csv(output_path + 'correlation_analysis.csv', index=False)
@@ -72,7 +73,8 @@ def preprocess_transformation_data(df):
         raise ValueError("Indices of df and selected_df do not match. Check the alignment.")
 
     # Concatenate with non-feature columns, including 'Y'
-    final_df = pd.concat([df[non_numeric_cols], selected_df], axis=1)
+    # final_df = pd.concat([df[non_numeric_cols], selected_df], axis=1)
+    final_df = pd.concat([df[non_numeric_cols], iou_dice_cols, selected_df], axis=1)
     final_df.to_csv(output_path + 'final_preprocessed_data.csv', index=False)
 
     return final_df

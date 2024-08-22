@@ -256,7 +256,7 @@ def main(visualize=False, test_less_hu=False):
                                      original_mask_array=original_mask_array)
 
             features = extract_roi_and_compute_radiomics(
-                {'ct_images': patient_data['ct_images'], 'segmentation': {'seg_mass': transformed_mask_array},
+                {'ct_images': original_ct_array, 'segmentation': {'seg_mass': transformed_mask_array},
                  'pixel_spacing': pixel_spacing, 'slice_thickness': slice_thickness},
                 patient_id, seg_label)
 
@@ -278,10 +278,11 @@ def main(visualize=False, test_less_hu=False):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--visualize', type=bool,  default=False)
-    parser.add_argument('--test_less_hu', type=bool,  default=False)
-
-    args = parser.parse_args()
-    main(args.visualize, args.test_less_hu)
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('--visualize', type=bool,  default=False)
+    # parser.add_argument('--test_less_hu', type=bool,  default=False)
+    #
+    # args = parser.parse_args()
+    # main(args.visualize, args.test_less_hu)
+    main()
 

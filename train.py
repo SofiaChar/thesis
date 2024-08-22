@@ -22,6 +22,8 @@ def main(args):
     X = df.drop(columns=['Y'])
     y = df['Y']
 
+    X = X.drop(columns=['iou', 'dice'])
+
     # Only keep numeric features
     numeric_features = X.select_dtypes(include=[np.number]).columns.tolist()
     X = X[numeric_features]
