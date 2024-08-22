@@ -72,7 +72,7 @@ def main(args):
         json.dump(metrics, f)
 
     # Save the model
-    with open('/valohai/outputs/random_forest_model.pkl', 'wb') as f:
+    with open(f'/valohai/outputs/{args.transformation_type}_random_forest_model.pkl', 'wb') as f:
         joblib.dump(pipeline, f)
 
     # Save training parameters
