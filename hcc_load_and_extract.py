@@ -213,7 +213,7 @@ def main(visualize=False, test_less_hu=False):
         original_mask_array = patient_data['segmentation'][seg_label]
         original_mask_sitk = numpy_array_to_sitk(original_mask_array, pixel_spacing, slice_thickness)
 
-        if viz:
+        if visualize:
             save_overlay_viz(original_ct_array, original_mask_array, '/valohai/outputs/',
                              f'{patient_id}_original', spacing=(pixel_spacing, slice_thickness), test_less_hu=test_less_hu)
 
@@ -248,7 +248,7 @@ def main(visualize=False, test_less_hu=False):
             transformed_mask_sitk = transform_func(original_mask_sitk)
             transformed_mask_array = sitk_to_numpy_array(transformed_mask_sitk)
 
-            if viz:
+            if visualize:
                 if transform_name in selected_transforms_to_viz:
                     # Save visualization for transformed mask
                     save_overlay_viz(original_ct_array, transformed_mask_array, '/valohai/outputs/',
