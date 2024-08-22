@@ -1,18 +1,27 @@
 - step:
     name: load
     image: python:3.9
-    environment: aws-eu-west-1-p2-xlarge
+    environment: sama-aws-eu-west-1-p2-xlarge
     command:
       - pip install SimpleITK pyradiomics PyWavelets pykwalify numpy==1.26.4
       - pip install pydicom
       - pip install matplotlib ipywidgets
       - pip install valohai-utils
+      - pip install tqdm
       - pip install scikit-image
       - python hcc_load_and_extract.py
     inputs:
       - name: hcc_dataset
         default: https://dd-sample-bucket.s3.eu-west-1.amazonaws.com/sofiia-thesis/hcc_full.zip
         optional: True
+    parameters:
+      - name: visualize
+        default: False
+        type: flag
+      - name: test_less_hu
+        default: False
+        type: flag
+
 - step:
     name: prepare_dataset
     image: python:3.9
@@ -21,11 +30,14 @@
       - pip install SimpleITK pyradiomics PyWavelets pykwalify numpy==1.26.4
       - pip install pandas scikit-learn openpyxl
       - pip install matplotlib
+      - pip install tqdm
       - pip install pydicom ipywidgets
+      - pip install valohai-utils
+
       - python prepare_dataset.py
     inputs:
       - name: dataset
-        default: datum://hcc_radiomics_extracted/latest
+        default: datum://hcc_radiomics_extracted
       - name: labels
         default: datum://hcc_labels
 
@@ -35,7 +47,7 @@
     environment: azure-westeurope-f2sv2
     command:
       - pip install numpy pandas scikit-learn matplotlib
-      - python train.py
+      - python train.py {parameters}
     inputs:
       - name: dataset
         default: datum://{parameter:transformation_type}
@@ -59,60 +71,3 @@
         default: 1
         type: integer
         description: Minimum number of samples required to be at a leaf node
-
-
-- step:
-    name: pre_step
-    image: python:3.10
-    command:
-      - pip install valohai-utils
-      - python ./preprocess.py
-    parameters:
-      - name: exec_id
-        type: string
-        default: "id_123"
-      - name: pre_param
-        type: integer
-        default: 5
-    inputs:
-      - name: pre_dataset
-        default: https://valohaidemo.blob.core.windows.net/mnist/mnist.npz
-
-- step:
-    name: train_step
-    image: python:3.10
-    command:
-      - pip install valohai-utils
-      - python ./train.py
-    parameters:
-      - name: exec_id
-        type: string
-        default: "id_123"
-      - name: train_param
-        type: integer
-        default: 5
-    inputs:
-      - name: dataset
-        default: https://valohaidemo.blob.core.windows.net/mnist/mnist.npz
-        optional: true
-
-- pipeline:
-    name: Example for Pipeline Task
-    parameters:
-      - name: id
-        targets:
-          - preprocess.parameters.exec_id
-          - train.parameters.exec_id
-        default: "id_123"
-    nodes:
-      - name: preprocess
-        step: pre_step
-        type: execution
-      - name: train
-        step: train_step
-        type: execution
-        override:
-          inputs:
-            - name: dataset
-    edges:
-      - [preprocess.output.preprocessed_mnist.npz, train.input.dataset]

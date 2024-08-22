@@ -2,7 +2,7 @@ import argparse
 import csv
 import json
 import random
-
+from tqdm import tqdm
 import numpy as np
 import SimpleITK as sitk
 
@@ -178,10 +178,6 @@ def save_radiomics_to_csv(all_features, output_filename='hcc_radiomics.csv'):
     metadata_path = f'{output_path}.metadata.json'
     with open(metadata_path, 'w') as outfile:
         json.dump(metadata, outfile)
-
-
-def tqdm(param):
-    pass
 
 
 def main(viz=False, test_less_hu=False):
