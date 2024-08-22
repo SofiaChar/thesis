@@ -180,7 +180,10 @@ def save_radiomics_to_csv(all_features, output_filename='hcc_radiomics.csv'):
         json.dump(metadata, outfile)
 
 
-def main(viz=False, test_less_hu=False):
+def main(visualize=False, test_less_hu=False):
+    print('visualize', visualize)
+    print('test_less_hu', test_less_hu)
+
     # Specify the path to your zipped dataset
     zip_path = "/valohai/inputs/hcc_dataset/hcc_full.zip"
     local = False
@@ -280,5 +283,5 @@ if __name__ == '__main__':
     parser.add_argument('--test_less_hu', type=bool)
 
     args = parser.parse_args()
-    main(args)
+    main(args.visualize, args.test_less_hu)
 

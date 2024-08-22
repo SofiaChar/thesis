@@ -18,9 +18,13 @@
       - name: visualize
         default: False
         type: flag
+        pass-true-as: --visualize=True
+        pass-false-as: --visualize=False
       - name: test_less_hu
         default: False
         type: flag
+        pass-true-as: --test_less_hu=True
+        pass-false-as: --test_less_hu=False
 
 - step:
     name: prepare_dataset
