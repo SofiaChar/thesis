@@ -279,8 +279,8 @@ def main(visualize=False, test_less_hu=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--visualize', type=bool)
-    parser.add_argument('--test_less_hu', type=bool)
+    parser.add_argument('--visualize', type=bool,  default=False)
+    parser.add_argument('--test_less_hu', type=bool,  default=False)
 
     args = parser.parse_args()
     main(args.visualize, args.test_less_hu)

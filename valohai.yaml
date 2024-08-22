@@ -9,7 +9,7 @@
       - pip install valohai-utils
       - pip install tqdm
       - pip install scikit-image
-      - python hcc_load_and_extract.py
+      - python hcc_load_and_extract.py {parameters}
     inputs:
       - name: hcc_dataset
         default: https://dd-sample-bucket.s3.eu-west-1.amazonaws.com/sofiia-thesis/hcc_full.zip
