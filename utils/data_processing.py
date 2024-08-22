@@ -1,10 +1,8 @@
 import os
-
 import numpy as np
-import pydicom
 import matplotlib.pyplot as plt
 import valohai
-from skimage import exposure
+import SimpleITK as sitk
 
 
 def create_segmentation_dict(seg_dcm, img_dcm, img_pixel_array):
@@ -54,7 +52,7 @@ def alpha_fusion(image, mask, alpha=0.5, color=(1, 0, 0)):
 
 def visualize_masks(seg_dict, img_pixelarray, patient, num_frames=3, save_dir='output'):
     """Visualize a few frames with the masks using alpha fusion."""
-    import os
+
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
@@ -95,30 +93,6 @@ def visualize_masks(seg_dict, img_pixelarray, patient, num_frames=3, save_dir='o
         plt.tight_layout()
         plt.savefig(os.path.join(save_dir, f'{patient}_frame_{frame_idx}.png'))
         plt.close()
-
-
-import SimpleITK as sitk
-import numpy as np
-import matplotlib.pyplot as plt
-from ipywidgets import interact, fixed
-
-
-# Utility function to visualize images
-def myshow(img, title=None, margin=0.05, dpi=80):
-    nda = sitk.GetArrayViewFromImage(img)
-    spacing = img.GetSpacing()
-    zsize = nda.shape[0]
-    ysize = nda.shape[1]
-    xsize = nda.shape[2]
-    figsize = (1 + margin) * xsize / dpi, (1 + margin) * ysize / dpi
-    fig = plt.figure(title, figsize=figsize, dpi=dpi)
-    ax = fig.add_axes([margin, margin, 1 - 2 * margin, 1 - 2 * margin])
-    extent = (0, xsize * spacing[2], 0, ysize * spacing[1])
-    t = ax.imshow(
-        nda[zsize // 2, :, :], extent=extent, interpolation="hamming", cmap="gray", origin="lower"
-    )
-    if title:
-        plt.title(title)
 
 
 # Define transformation functions
@@ -195,13 +169,6 @@ def rotate(image, angle_degrees, axis=2):
     return rotated_image
 
 
-def scale(image, scale_factor):
-    transform = sitk.AffineTransform(image.GetDimension())
-    scale = [scale_factor] * image.GetDimension()
-    transform.SetMatrix(np.diag(scale).flatten())
-    return sitk.Resample(image, image, transform, sitk.sitkNearestNeighbor)
-
-
 def shear(image, shear_factor):
     dimension = image.GetDimension()
 
@@ -252,14 +219,6 @@ def shear(image, shear_factor):
     return sheared_image
 
 
-def create_structuring_element(radius, dimension):
-    """Create a binary structuring element for erosion and dilation."""
-    size = [2 * r + 1 for r in radius]
-    structuring_element = sitk.BinaryDilate(sitk.ConstantPad(sitk.Image(size, sitk.sitkUInt8), [r for r in radius]),
-                                            [r for r in radius])
-    return structuring_element
-
-
 def erosion(image, radius):
     # Create a BinaryErodeImageFilter object
     erode_filter = sitk.BinaryErodeImageFilter()
@@ -298,66 +257,74 @@ def sitk_to_numpy_array(img_sitk):
     return sitk.GetArrayFromImage(img_sitk)
 
 
-def plot_distribution(df, columns, output_dir='/valohai/outputs'):
-    # Ensure the output directory exists
-    os.makedirs(output_dir, exist_ok=True)
-
-    for column in columns:
-        plt.figure()
-        df[column].hist()
-        plt.title(f'Distribution of {column}')
-        plt.xlabel(column)
-        plt.ylabel('Frequency')
-
-        # Save plot to the specified directory
-        plt.savefig(os.path.join(output_dir, f'distribution_{column}.png'))
-        plt.close()  # Close the plot to avoid display
-
-
-def enhance_contrast(image_array, lower_percentile=1, upper_percentile=99):
+def apply_windowing(ct_array, window_level, window_width):
     """
-    Enhance the contrast of the image using percentile-based normalization.
-    Args:
-        image_array (np.ndarray): The image array to enhance.
-        lower_percentile (float): Lower percentile for normalization.
-        upper_percentile (float): Upper percentile for normalization.
+    Apply windowing to CT image data.
+
+    Parameters:
+    - ct_array: numpy array of the CT image.
+    - window_level: window level value.
+    - window_width: window width value.
+
     Returns:
-        np.ndarray: The contrast-enhanced image array.
+    - Windowed image array.
     """
-    p_low, p_high = np.percentile(image_array, (lower_percentile, upper_percentile))
-    image_rescale = exposure.rescale_intensity(image_array, in_range=(p_low, p_high))
-    return image_rescale
+    lower_bound = window_level - (window_width / 2)
+    upper_bound = window_level + (window_width / 2)
+    windowed_array = np.clip(ct_array, lower_bound, upper_bound)
+    windowed_array = (windowed_array - lower_bound) / (upper_bound - lower_bound)  # Normalize to [0, 1]
+
+    return np.clip(windowed_array, 0, 1)
 
 
-def apply_windowing(image_array, window_level, window_width):
+def visualize_histogram(ct_slice, slice_number, plane, output_path, prefix):
     """
-    Apply windowing to the image array.
-    Args:
-        image_array (np.ndarray): The image array to window.
-        window_level (float): The center value for windowing.
-        window_width (float): The range of pixel values to display.
-    Returns:
-        np.ndarray: The windowed image array.
+    Visualize and save the histogram of a CT slice.
+
+    Parameters:
+    - ct_slice: The CT slice as a numpy array.
+    - slice_number: Index of the slice.
+    - plane: The plane of the slice (axial, sagittal, coronal).
+    - output_path: Path to save the histogram image.
     """
-    min_value = window_level - (window_width / 2)
-    max_value = window_level + (window_width / 2)
-    windowed_image = np.clip(image_array, min_value, max_value)
-    windowed_image = (windowed_image - min_value) / (max_value - min_value)  # Normalize to [0, 1]
-    return windowed_image
+    plt.figure(figsize=(10, 5))
+    plt.hist(ct_slice.flatten(), bins=100, color='blue', alpha=0.7)
+    plt.title(f'Histogram of {plane.capitalize()} Slice {slice_number}')
+    plt.xlabel('Intensity')
+    plt.ylabel('Frequency')
+    plt.grid(True)
+    plt.savefig(f'{output_path}/{prefix}_{plane}_slice_{slice_number}_histogram.png')
+    plt.close()
+
+    valohai.outputs().live_upload(f'{output_path}/{prefix}_{plane}_slice_{slice_number}_histogram.png')
 
 
-def save_overlay_viz(ct_array, mask_array, output_path, prefix, spacing, original_mask_array=None):
-    # Convert images to numpy arrays
-    # ct_array = sitk.GetArrayFromImage(ct_image_sitk)
-    # mask_array = sitk.GetArrayFromImage(mask_image_sitk)
+def prep_ct_scan(ct_array, patient):
+    ct_array = np.clip(ct_array, -1000, 2500)
 
+    mean_val = np.mean(ct_array)
+    print('mean ', mean_val)
+
+    if mean_val > 100 or '047' in patient:  # High-density scan (like HCC 17)
+        ct_array = ct_array - 1000
+
+    return ct_array
+
+
+def save_overlay_viz(ct_array, mask_array, output_path, prefix, spacing, test_less_hu, original_mask_array=None, viz_hist=False):
     # Get physical spacing and slice thickness
     slice_thickness = spacing[1]
     pixel_spacing = spacing[0]  # X and Y spacings
 
-    # Example window level and width for CT images (adjust as needed)
-    window_level = 40
+    window_level = 40  # Standard window level
     window_width = 400
+
+    if not test_less_hu:
+        ct_array = prep_ct_scan(ct_array, prefix)
+    print(' Chosen parameters ', window_level, window_width)
+
+    if viz_hist:
+        visualize_histogram(ct_array, 0, '0', output_path, prefix)
 
     # Apply windowing to CT array
     ct_array_windowed = apply_windowing(ct_array, window_level, window_width)
@@ -372,7 +339,7 @@ def save_overlay_viz(ct_array, mask_array, output_path, prefix, spacing, origina
     for plane in planes:
         # Determine slice indices for each plane
         if plane == 'axial':
-            slices = [ct_array.shape[0] // 4, ct_array.shape[0] // 2,  ct_array.shape[0] // 3]
+            slices = [ct_array.shape[0] // 4, ct_array.shape[0] // 2, ct_array.shape[0] // 3]
             aspect_ratio = 1
         elif plane == 'sagittal':
             slices = [ct_array.shape[1] // 4, ct_array.shape[1] // 2, ct_array.shape[1] // 3]
