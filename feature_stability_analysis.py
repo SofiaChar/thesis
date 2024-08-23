@@ -73,7 +73,7 @@ if __name__ == "__main__":
     os.makedirs(output_path, exist_ok=True)
 
     # Load the original and transformed datasets
-    original_csv_path = data_path + 'original_dataset/original.csv'
+    original_csv_path = data_path + 'original_dataset/raw_original.csv'
     transformed_csv_path = data_path + f'transformed_dataset/{args.transformation_type}.csv'
 
     # Run the feature stability analysis
