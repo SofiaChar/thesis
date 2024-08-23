@@ -75,3 +75,27 @@
         default: 1
         type: integer
         description: Minimum number of samples required to be at a leaf node
+
+
+- step:
+    name: feature_stability
+    image: python:3.9
+    environment: azure-westeurope-f2sv2
+    command:
+      - pip install SimpleITK pyradiomics PyWavelets pykwalify numpy==1.26.4
+      - pip install pandas scikit-learn openpyxl
+      - pip install matplotlib
+      - pip install tqdm
+      - pip install pydicom ipywidgets
+      - pip install valohai-utils
+
+      - python feature_stability_analysis.py {parameters}
+    inputs:
+      - name: transformed_dataset
+        default: datum://{parameter:transformation_type}
+      - name: original_dataset
+        default: datum://original
+    parameters:
+      - name: transformation_type
+        default: raw_dilated
+        type: string
