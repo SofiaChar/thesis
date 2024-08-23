@@ -73,6 +73,9 @@ def main(args):
     with open(f'/valohai/outputs/metrics_{args.transformation_type}.json', 'w') as f:
         json.dump(metrics, f)
 
+    with open(f'/valohai/outputs/metrics_{args.transformation_type}.json.metadata.json', 'w') as outfile:
+        json.dump({"valohai.alias": f"metrics_{args.transformation_type}"}, outfile)
+
     # Save the model
     model_path = f'/valohai/outputs/{args.transformation_type}_random_forest_model.pkl'
     with open(model_path, 'wb') as f:
@@ -104,6 +107,8 @@ def main(args):
 
     # Save feature importances
     importance_df.to_csv(f'/valohai/outputs/feature_importances_{args.transformation_type}.csv', index=False)
+    with open(f'/valohai/outputs/feature_importances_{args.transformation_type}.csv.metadata.json', 'w') as outfile:
+        json.dump({"valohai.alias": f"feature_importances_{args.transformation_type}"}, outfile)
 
     # Plot feature importances
     plt.figure(figsize=(10, 8))
