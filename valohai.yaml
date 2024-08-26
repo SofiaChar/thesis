@@ -60,7 +60,7 @@
         default: original
         type: string
       - name: n_estimators
-        default: 100
+        default: 200
         type: integer
         description: Number of trees in the forest
       - name: max_depth
@@ -94,8 +94,64 @@
       - name: transformed_dataset
         default: datum://{parameter:transformation_type}
       - name: original_dataset
-        default: datum://original
+        default: datum://raw_original
     parameters:
       - name: transformation_type
         default: raw_dilated
+        type: string
+
+
+- step:
+    name: model_degradation
+    image: python:3.9
+    environment: azure-westeurope-f2sv2
+    command:
+      - pip install SimpleITK pyradiomics PyWavelets pykwalify numpy==1.26.4
+      - pip install pandas scikit-learn openpyxl
+      - pip install matplotlib
+      - pip install tqdm
+      - pip install pydicom ipywidgets
+      - pip install valohai-utils
+      - python model_degradation.py {parameters}
+    inputs:
+      - name: transformed_dataset
+        default: datum://{parameter:transformation_type}
+      - name: original_dataset
+        default: datum://original
+      - name: transformed_model
+        default: datum://{parameter:transformation_type}_model
+      - name: original_model
+        default: datum://original_model
+    parameters:
+      - name: transformation_type
+        default: dilated
+        type: string
+
+- step:
+    name: feature_importance
+    image: python:3.9
+    environment: azure-westeurope-f2sv2
+    command:
+      - pip install SimpleITK pyradiomics PyWavelets pykwalify numpy==1.26.4
+      - pip install pandas scikit-learn openpyxl
+      - pip install matplotlib
+      - pip install tqdm seaborn
+      - pip install pydicom ipywidgets
+      - pip install valohai-utils
+      - python feature_importance_via_randomization.py {parameters}
+    inputs:
+      - name: transformed_dataset
+        default: datum://{parameter:transformation_type}
+      - name: original_dataset
+        default: datum://original
+      - name: transformed_model
+        default: datum://{parameter:transformation_type}_model
+      - name: original_model
+        default: datum://original_model
+    parameters:
+      - name: transformation_type
+        default: dilated
+        type: string
+      - name: metric
+        default: f1
         type: string
