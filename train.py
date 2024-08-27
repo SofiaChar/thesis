@@ -89,6 +89,18 @@ def main(args):
         with open(metadata_path, 'w') as outfile:
             json.dump({"valohai.alias": f"{args.transformation_type}_model"}, outfile)
 
+    # Predict train
+    y_train_pred = pipeline.predict(X_train)
+    train_metrics = {
+        'train_accuracy': accuracy_score(y_train, y_train_pred),
+        'train_precision': precision_score(y_train, y_train_pred, average='weighted'),
+        'train_recall': recall_score(y_train, y_train_pred, average='weighted'),
+        'train_f1_score': f1_score(y_train, y_train_pred, average='weighted')
+    }
+
+    print("Train Set Results:")
+    print(json.dumps(train_metrics))
+
     # Predict on the test set and compute metrics
     y_test_pred = pipeline.predict(X_test)
     test_metrics = {

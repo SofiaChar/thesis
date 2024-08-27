@@ -80,8 +80,8 @@ def plot_degradation_bar_chart(iou_values, dice_values, accuracy_degradation, f1
         if np.any(iou_bin_indices == j):
             avg_deg = np.mean([accuracy_degradation[i] for i in range(len(iou_values)) if iou_bin_indices[i] == j])
             # If the average degradation is 0, set it to 0.05
-            if avg_deg == 0.0:
-                avg_deg = 0.05
+            # if avg_deg == 0.0:
+            #     avg_deg = 0.05
             accuracy_degradation_iou_avg.append(avg_deg)
             valid_bins_iou.append(bins[j])
 
@@ -195,9 +195,9 @@ if __name__ == "__main__":
 
     # Train/test split
     X_train_orig, X_val_orig, y_train_orig, y_val_orig = train_test_split(X_original, y_true, test_size=0.2,
-                                                                          random_state=42)
+                                                                          random_state=5)
     X_train_trans, X_val_trans, y_train_trans, y_val_trans = train_test_split(X_transformed, y_true, test_size=0.2,
-                                                                              random_state=42)
+                                                                              random_state=5)
 
     # Match IoU and Dice values to the training and validation sets
     iou_values_train = iou_values.iloc[X_train_orig.index]
@@ -228,6 +228,11 @@ if __name__ == "__main__":
     # Plot degradation vs mask change for validation set (class-based)
     plot_degradation_bar_chart(iou_values_val, dice_values_val, accuracy_degradation_val_class, f1_degradation_val_class,
                                y_true_val_class, output_path, args.transformation_type, dataset_type='val')
+
+    # Plot degradation vs mask change for train set (class-based)
+    plot_degradation_bar_chart(iou_values_train, dice_values_train, accuracy_degradation_train_class,
+                               f1_degradation_train_class,
+                               y_true_train_class, output_path, args.transformation_type, dataset_type='train')
 
     # Plot degradation vs mask change for training set (proba-based)
     plot_degradation_scatter_plot(iou_values_train, dice_values_train, accuracy_degradation_train_proba, f1_degradation_train_proba,
