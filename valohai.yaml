@@ -169,7 +169,7 @@
     parameters:
       - name: transformation_type
         target: train.parameters.transformation_type
-        default: [ 'original','rotated_15_z','rotated_15_x','rotated_15_y','eroded','dilated','translated','sheared']
+        default: [original, rotated_15_z, rotated_15_x, rotated_15_y, eroded, dilated, translated, sheared]
     nodes:
       - name: preprocess
         type: execution
