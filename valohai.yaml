@@ -16,12 +16,12 @@
         optional: True
 #    parameters:
 #      - name: visualize
-#        default: False
+#        default: false
 #        type: flag
 #        pass-true-as: --visualize=True
 #        pass-false-as: --visualize=False
 #      - name: test_less_hu
-#        default: False
+#        default: false
 #        type: flag
 #        pass-true-as: --test_less_hu=True
 #        pass-false-as: --test_less_hu=False
@@ -166,10 +166,10 @@
 
 - pipeline:
     name: TrainingPipeline
-    parameters:
-      - name: transformation_type
-        target: train.parameters.transformation_type
-        default: [original, rotated_15_z, rotated_15_x, rotated_15_y, eroded, dilated, translated, sheared]
+#    parameters:
+#      - name: transformation_type
+#        target: train.parameters.transformation_type
+#        default: [original, rotated_15_z, rotated_15_x, rotated_15_y, eroded, dilated, translated, sheared]
     nodes:
       - name: preprocess
         type: execution
