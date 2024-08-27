@@ -4,9 +4,10 @@ import pandas as pd
 import numpy as np
 import joblib
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split, cross_validate, StratifiedKFold
+from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_curve, auc, make_scorer
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_curve, auc, log_loss, \
+    make_scorer, roc_auc_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
@@ -44,37 +45,69 @@ def main(args):
         with open(f'{test_set_path}.metadata.json', 'w') as outfile:
             json.dump({"valohai.alias": f"test_set_{args.transformation_type}"}, outfile)
 
-    max_depth = args.max_depth if args.max_depth != 0 else None  # Correct handling of max_depth
-
     # Create preprocessing pipeline for numeric features
     pipeline = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='median')),
         ('scaler', StandardScaler()),
-        ('classifier', RandomForestClassifier(
-            n_estimators=args.n_estimators,
-            max_depth=max_depth,
-            min_samples_split=args.min_samples_split,
-            min_samples_leaf=args.min_samples_leaf,
-            random_state=42
-        ))
+        ('classifier', RandomForestClassifier(random_state=42))
     ])
 
-    # Define scoring metrics
-    scoring = {
-        'accuracy': 'accuracy',
-        'precision': make_scorer(precision_score, average='weighted'),
-        'recall': make_scorer(recall_score, average='weighted'),
-        'f1': make_scorer(f1_score, average='weighted')
-    }
+    # If hyperparameter tuning is enabled
+    if args.tune_hyperparameters:
+        print("Hyperparameter tuning is enabled. Performing RandomizedSearchCV...")
 
-    # Perform cross-validation on the training set
-    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=args.split_random_state)
-    cv_results = cross_validate(pipeline, X_train, y_train, cv=cv, scoring=scoring, return_train_score=False)
+        # Hyperparameter grid
+        rf_hyperparam_grid = {
+            "n_estimators": [100, 500],
+            "max_features": ['auto', 7, 10, 15],
+            "min_samples_leaf": [1, 5, 20, 100],
+            "min_samples_split": [2, 10, 50, 250],
+            "criterion": ["gini", "entropy"],
+            "max_depth": [4, 6, 8, 10, None]
+        }
 
-    # Print cross-validation results
-    print("Cross-Validation Results:")
-    for metric in scoring.keys():
-        print(f"{metric}: {np.mean(cv_results[f'test_{metric}']):.4f} (+/- {np.std(cv_results[f'test_{metric}']):.4f})")
+        # Initialize RandomizedSearchCV
+        rf_random_search = RandomizedSearchCV(
+            estimator=pipeline.named_steps['classifier'],
+            param_distributions=rf_hyperparam_grid,
+            n_iter=200,
+            scoring="neg_log_loss",
+            refit=True,
+            return_train_score=True,
+            cv=5,  # Cross-validation with 5 folds
+            verbose=10,
+            n_jobs=-1,
+            random_state=42
+        )
+
+        # Perform the random search
+        rf_random_search.fit(X_train, y_train)
+
+        # Best parameters
+        best_params = rf_random_search.best_params_
+        print("Best Hyperparameters:", best_params)
+
+        # Use the best model from RandomizedSearchCV
+        best_model = rf_random_search.best_estimator_
+
+        # Update pipeline with the best model
+        pipeline.set_params(classifier=best_model)
+
+    else:
+        print("Hyperparameter tuning is disabled. Using provided parameters.")
+
+        # Set model parameters from args
+        pipeline.set_params(
+            classifier=RandomForestClassifier(
+                n_estimators=int(args.n_estimators),
+                max_depth=int(args.max_depth) if args.max_depth != 0 else None,
+                min_samples_split=int(args.min_samples_split),
+                min_samples_leaf=int(args.min_samples_leaf),
+                max_features=int(args.max_features),
+                criterion=args.criterion,
+                random_state=42
+            )
+        )
 
     # Train the final model on the entire training set
     pipeline.fit(X_train, y_train)
@@ -103,15 +136,18 @@ def main(args):
 
     # Predict on the test set and compute metrics
     y_test_pred = pipeline.predict(X_test)
+    y_test_proba = pipeline.predict_proba(X_test)
     test_metrics = {
         'test_accuracy': accuracy_score(y_test, y_test_pred),
         'test_precision': precision_score(y_test, y_test_pred, average='weighted'),
         'test_recall': recall_score(y_test, y_test_pred, average='weighted'),
-        'test_f1_score': f1_score(y_test, y_test_pred, average='weighted')
+        'test_f1_score': f1_score(y_test, y_test_pred, average='weighted'),
+        'test_log_loss': log_loss(y_test, y_test_proba),
+        'test_roc_auc': roc_auc_score(y_test, y_test_proba[:, 1])
     }
 
     print("Test Set Results:")
-    print(json.dumps(test_metrics))
+    print(json.dumps(test_metrics, indent=4))
 
     # Save the test set metrics
     with open(f'/valohai/outputs/test_metrics_{args.transformation_type}.json', 'w') as f:
@@ -143,6 +179,7 @@ def main(args):
     plt.legend()
     plt.title('ROC AUC Curve For Random Forest Model On Train vs Test Set')
     plt.savefig('/valohai/outputs/roc_auc_curve.png')
+    plt.show()
 
     # Feature Importance on the final model
     classifier = pipeline.named_steps['classifier']  # Extract the classifier from the pipeline
@@ -172,15 +209,21 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train a Random Forest model and show feature importances.')
+    parser.add_argument('--transformation_type', type=str, required=True,
+                        help="Type of transformation (e.g., dilated, rotated_15_z, etc.)")
     parser.add_argument('--n_estimators', type=int, default=100, help='Number of trees in the forest.')
-    parser.add_argument('--transformation_type', type=str)
     parser.add_argument('--max_depth', type=int, default=0, help='Maximum depth of the tree (0 for None).')
     parser.add_argument('--min_samples_split', type=int, default=2,
                         help='The minimum number of samples required to split an internal node.')
     parser.add_argument('--min_samples_leaf', type=int, default=1,
                         help='The minimum number of samples required to be at a leaf node.')
+    parser.add_argument('--max_features', type=str, default='auto',
+                        help='Number of features to consider at each split (int or "auto").')
+    parser.add_argument('--criterion', type=str, default='gini', help='The function to measure the quality of a split.')
     parser.add_argument('--split_random_state', type=int, default=42)
     parser.add_argument('--save_alias', type=bool, default=False)
+    parser.add_argument('--tune_hyperparameters', type=bool, default=False,
+                        help='Whether to perform hyperparameter tuning.')
     parser.add_argument('--dummy', type=int, default=2)
 
     args = parser.parse_args()

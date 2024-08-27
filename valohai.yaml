@@ -61,21 +61,25 @@
         default: original
         type: string
       - name: n_estimators
-        default: 200
+        default: 100
         type: integer
         description: Number of trees in the forest
       - name: max_depth
-        default: 0
+        default: 10
         type: integer
         description: Maximum depth of the tree
       - name: min_samples_split
-        default: 2
+        default: 10
         type: integer
-        description: Minimum number of samples required to split an internal node
       - name: min_samples_leaf
-        default: 1
+        default: 5
         type: integer
-        description: Minimum number of samples required to be at a leaf node
+      - name: max_features
+        default: 15
+        type: integer
+      - name: criterion
+        default: gini
+        type: string
       - name: split_random_state
         default: 5
         type: integer
@@ -86,6 +90,10 @@
         default: true
         type: flag
         pass-true-as: --save_alias=1
+      - name: tune_hyperparameters
+        default: false
+        type: flag
+        pass-true-as: --tune_hyperparameters=1
 
 
 - step:
