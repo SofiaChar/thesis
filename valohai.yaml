@@ -14,17 +14,15 @@
       - name: hcc_dataset
         default: https://dd-sample-bucket.s3.eu-west-1.amazonaws.com/sofiia-thesis/hcc_full.zip
         optional: True
-#    parameters:
-#      - name: visualize
-#        default: false
-#        type: flag
-#        pass-true-as: --visualize=True
-#        pass-false-as: --visualize=False
-#      - name: test_less_hu
-#        default: false
-#        type: flag
-#        pass-true-as: --test_less_hu=True
-#        pass-false-as: --test_less_hu=False
+    parameters:
+      - name: visualize
+        default: false
+        type: flag
+        pass-true-as: --visualize=1
+      - name: test_less_hu
+        default: false
+        type: flag
+        pass-true-as: --test_less_hu=1
 
 - step:
     name: prepare_dataset
@@ -79,11 +77,15 @@
         type: integer
         description: Minimum number of samples required to be at a leaf node
       - name: split_random_state
-        default: 2
+        default: 5
         type: integer
       - name: dummy
         default: 2
         type: integer
+      - name: save_alias
+        default: true
+        type: flag
+        pass-true-as: --save_alias=1
 
 
 - step:

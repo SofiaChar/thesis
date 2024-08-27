@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
     # Load the original and transformed datasets
     original_csv_path = data_path + 'original_dataset/raw_original.csv'
-    transformed_csv_path = data_path + f'transformed_dataset/{args.transformation_type}.csv'
+    transformed_csv_path = data_path + f'transformed_dataset/raw_{args.transformation_type}.csv'
 
     # Run the feature stability analysis
     feature_value_stability(original_csv_path, transformed_csv_path, output_path)
