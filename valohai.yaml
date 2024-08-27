@@ -197,6 +197,6 @@
       - name: model_degradation
         type: execution
         step: model_degradation
-#    edges:
-#      - [ feature_importance.parameter.transformation_type, model_degradation.parameter.transformation_type ]
-#      - [ feature_importance.parameter.transformation_type, feature_stability.parameter.transformation_type ]
+    edges:
+      - [ feature_importance.parameter.transformation_type, model_degradation.parameter.transformation_type ]
+      - [ feature_importance.parameter.transformation_type, feature_stability.parameter.transformation_type ]
