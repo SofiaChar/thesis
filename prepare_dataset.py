@@ -67,6 +67,7 @@ def preprocess_transformation_data(df):
     # Reset index to ensure alignment
     df = df.reset_index(drop=True)
     selected_df = selected_df.reset_index(drop=True)
+    iou_dice_cols = iou_dice_cols.reset_index(drop=True)
 
     # Ensure indices align before concatenating
     if not df.index.equals(selected_df.index):
@@ -85,14 +86,20 @@ print()
 
 for transform_type in transformation_types:
     transform_df = radiomics_df[radiomics_df['transformation'] == transform_type]
+
+    raw_output_path = f'/valohai/outputs/raw_{transform_type}.csv'
+    transform_df.to_csv(raw_output_path, index=False)
+
+    metadata_path = f'{raw_output_path}.metadata.json'
+    with open(metadata_path, 'w') as outfile:
+        json.dump({"valohai.alias": 'raw_'+transform_type}, outfile)
+
     processed_df = preprocess_transformation_data(transform_df)
     output_path = f'/valohai/outputs/{transform_type}.csv'
     processed_df.to_csv(output_path)
 
-    metadata = {"valohai.alias": transform_type}
-
     metadata_path = f'{output_path}.metadata.json'
     with open(metadata_path, 'w') as outfile:
-        json.dump(metadata, outfile)
+        json.dump({"valohai.alias": transform_type}, outfile)
 
 print("Preprocessing complete. Files saved.")

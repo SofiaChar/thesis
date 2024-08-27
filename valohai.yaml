@@ -44,8 +44,9 @@
       - name: labels
         default: datum://hcc_labels
     parameters:
-      - name: transformation_type
-        type: string
+      - name: dummy
+        default: 2
+        type: integer
 
 - step:
     name: train
@@ -78,6 +79,9 @@
         type: integer
         description: Minimum number of samples required to be at a leaf node
       - name: split_random_state
+        default: 2
+        type: integer
+      - name: dummy
         default: 2
         type: integer
 
@@ -175,7 +179,7 @@
         step: train
         on-error: stop-all
     edges:
-      - [ preprocess.parameter.transformation_type, train.parameter.transformation_type ]
+      - [ preprocess.parameter.dummy, train.parameter.dummy ]
 
 
 - pipeline:

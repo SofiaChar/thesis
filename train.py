@@ -29,7 +29,7 @@ def main(args):
     X = X[numeric_features]
 
     # Train/test split
-    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=args.split_random_state)
 
     max_depth = args.max_depth if args.max_depth != 0 else None  # Correct handling of max_depth
 
@@ -127,6 +127,8 @@ if __name__ == '__main__':
     parser.add_argument('--max_depth', type=int, default=0, help='Maximum depth of the tree (0 for None).')
     parser.add_argument('--min_samples_split', type=int, default=2, help='The minimum number of samples required to split an internal node.')
     parser.add_argument('--min_samples_leaf', type=int, default=1, help='The minimum number of samples required to be at a leaf node.')
+    parser.add_argument('--split_random_state', type=int, default=42)
+    parser.add_argument('--dummy', type=int, default=2)
 
     args = parser.parse_args()
     main(args)
