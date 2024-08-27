@@ -37,13 +37,15 @@
       - pip install tqdm
       - pip install pydicom ipywidgets
       - pip install valohai-utils
-
       - python prepare_dataset.py
     inputs:
       - name: dataset
         default: datum://hcc_radiomics_extracted
       - name: labels
         default: datum://hcc_labels
+    parameters:
+      - name: transformation_type
+        type: string
 
 - step:
     name: train
@@ -75,6 +77,9 @@
         default: 1
         type: integer
         description: Minimum number of samples required to be at a leaf node
+      - name: split_random_state
+        default: 2
+        type: integer
 
 
 - step:
@@ -88,16 +93,15 @@
       - pip install tqdm
       - pip install pydicom ipywidgets
       - pip install valohai-utils
-
       - python feature_stability_analysis.py {parameters}
     inputs:
       - name: transformed_dataset
-        default: datum://{parameter:transformation_type}
+        default: datum://raw_{parameter:transformation_type}
       - name: original_dataset
         default: datum://raw_original
     parameters:
       - name: transformation_type
-        default: raw_dilated
+        default: dilated
         type: string
 
 
@@ -155,3 +159,44 @@
       - name: metric
         default: f1
         type: string
+
+- pipeline:
+    name: TrainingPipeline
+    parameters:
+      - name: transformation_type
+        target: preprocess.parameters.transformation_type
+        default: [ 'original','rotated_15_z','rotated_15_x','rotated_15_y','eroded','dilated','translated','sheared']
+    nodes:
+      - name: preprocess
+        type: execution
+        step: prepare_dataset
+      - name: train
+        type: task
+        step: train
+        on-error: stop-all
+    edges:
+      - [ preprocess.parameter.transformation_type, train.parameter.transformation_type ]
+
+
+- pipeline:
+    name: EvalPipeline
+    parameters:
+      - name: transformation_type
+        targets:
+        - feature_importance.parameters.transformation_type
+        - model_degradation.parameters.transformation_type
+        - feature_stability.parameters.transformation_type
+        default: dilated
+    nodes:
+      - name: feature_stability
+        type: execution
+        step: feature_stability
+      - name: feature_importance
+        type: execution
+        step: feature_importance
+      - name: model_degradation
+        type: execution
+        step: model_degradation
+#    edges:
+#      - [ feature_importance.parameter.transformation_type, model_degradation.parameter.transformation_type ]
+#      - [ feature_importance.parameter.transformation_type, feature_stability.parameter.transformation_type ]
