@@ -147,7 +147,7 @@ def main(args):
     }
 
     print("Test Set Results:")
-    print(json.dumps(test_metrics, indent=4))
+    print(json.dumps(test_metrics))
 
     # Save the test set metrics
     with open(f'/valohai/outputs/test_metrics_{args.transformation_type}.json', 'w') as f:
